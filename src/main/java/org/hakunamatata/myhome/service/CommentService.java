@@ -17,7 +17,8 @@ import org.hakunamatata.myhome.model.ErrorMessage;
 
 public class CommentService {
 
-    private Map<Long, Comment> comments = Database.getComments();
+    //test
+	private Map<Long, Comment> comments = Database.getComments();
 
     public List<Comment> getAllComments() {
 	return new ArrayList<Comment>(comments.values());
