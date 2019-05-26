@@ -10,10 +10,10 @@ public class Name {
 	private String firstName;
 
 	@Column(name = "middle_name")
-	private String MiddleName;
+	private String middleName;
 
 	@Column(name = "last_name")
-	private String LastName;
+	private String lastName;
 
 	public Name() {
 		super();
@@ -23,8 +23,8 @@ public class Name {
 	public Name(String firstName, String middleName, String lastName) {
 		super();
 		this.firstName = firstName;
-		MiddleName = middleName;
-		LastName = lastName;
+		this.middleName = middleName;
+		this.lastName = lastName;
 	}
 
 	public String getFirstName() {
@@ -36,19 +36,24 @@ public class Name {
 	}
 
 	public String getMiddleName() {
-		return MiddleName;
+		return this.middleName;
 	}
 
 	public void setMiddleName(String middleName) {
-		MiddleName = middleName;
+		this.middleName = middleName;
 	}
 
 	public String getLastName() {
-		return LastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		this.lastName = lastName;
+	}
+
+	@Override
+	public String toString() {
+		return this.firstName + " " + this.middleName + " " + this.lastName;
 	}
 
 }

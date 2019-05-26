@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -15,18 +16,28 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CollectionId;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.SelectBeforeUpdate;
 import org.hibernate.annotations.Type;
 
 @XmlRootElement
 @Entity
+@SelectBeforeUpdate
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "member")
+@NamedQuery(name = "Member.getNamebyId", query = "select name from Member where memberId = ?1")
+@NamedNativeQuery(name= "Member.byFirstName", query = "select * from member where first_name = ?1", resultClass = Member.class)
 public class Member {
 
 	@Id
@@ -83,6 +94,7 @@ public class Member {
 	public Member(short memberType, Name name, String emailId, short gender, Date dob, Date doj) {
 		super();
 		this.memberType = memberType;
+		this.name = name;
 		this.emailId = emailId;
 		this.gender = gender;
 		this.dob = dob;
