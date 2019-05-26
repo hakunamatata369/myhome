@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.hakunamatata.myhome.model.Comment;
-import org.hakunamatata.myhome.resources.beans.CommentFilterBean;
+import org.hakunamatata.myhome.resources.beans.ResourceFilterBean;
 import org.hakunamatata.myhome.service.CommentService;
 
 @Path("/comments")
@@ -34,7 +34,7 @@ public class CommentsResource {
     CommentService commentService = new CommentService();
 
     @GET
-    public List<Comment> getComments(@BeanParam CommentFilterBean commentFilterBean) {
+    public List<Comment> getComments(@BeanParam ResourceFilterBean resourceFilterBean) {
 
 	/*
 	  public List<Comment> getComments(@DefaultValue("-1") @QueryParam("year") int year,
@@ -42,9 +42,9 @@ public class CommentsResource {
 	  				    @DefaultValue("-1") @QueryParam("size") int size) {
 	*/ 
 
-	int year = commentFilterBean.getYear();
-	int start = commentFilterBean.getStart();
-	int size = commentFilterBean.getSize();
+	int year = resourceFilterBean.getYear();
+	int start = resourceFilterBean.getStart();
+	int size = resourceFilterBean.getSize();
 
 	if (year > 0) {
 	    return commentService.getAllCommentsByYear(year);

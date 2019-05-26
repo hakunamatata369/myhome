@@ -3,7 +3,7 @@ package org.hakunamatata.myhome.resources.beans;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 
-public class CommentFilterBean {
+public class ResourceFilterBean {
 
     private @DefaultValue("-1") @QueryParam("year") int year;
     private @DefaultValue("-1") @QueryParam("start") int start;

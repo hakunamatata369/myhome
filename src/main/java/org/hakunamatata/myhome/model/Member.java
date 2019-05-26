@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
@@ -39,16 +40,17 @@ public class Member {
 	@Embedded
 	private Name name;
 
-	@Column(name = "phone")
-	private long phone;
+	@ElementCollection
+	@JoinTable(name = "phone", joinColumns = @JoinColumn(name = "member_id"))
+	@GenericGenerator(name = "sequence_gen", strategy = "sequence")
+	@CollectionId(columns = { @Column(name = "phone_id") }, generator = "sequence_gen", type = @Type(type = "long"))
+	private Collection<Phone> phones = new ArrayList<>();
 
 	@Column(name = "email_id")
 	private String emailId;
 
-	@ElementCollection
-	@JoinTable(name = "address", joinColumns = @JoinColumn(name = "member_id"))
-	@GenericGenerator(name = "sequence_gen", strategy = "sequence")
-	@CollectionId(columns = { @Column(name = "address_id") }, generator = "sequence_gen", type = @Type(type = "long"))
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "member_addresses", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
 	private Collection<Address> addresses = new ArrayList<>();
 
 	@Column(name = "gender")
@@ -64,12 +66,13 @@ public class Member {
 	@JoinTable(name = "favorites", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "data_id"))
 	private Collection<Node> favourites = new ArrayList<>();
 
-	@OneToMany( mappedBy = "vehicleOwner")
+	@OneToMany(mappedBy = "vehicleOwner", cascade = CascadeType.ALL)
 	private Collection<Vehicle> ownedVehicles = new ArrayList<>();
 
 	@ManyToMany
-	@JoinTable(name = "member_relations", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "data_id"))
+	@JoinTable(name = "member_relations", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "child_id "))
 	private Collection<Member> childs = new ArrayList<>();
+
 	@Transient
 	private List<Link> links = new ArrayList<>();
 
@@ -77,10 +80,9 @@ public class Member {
 
 	}
 
-	public Member(short memberType, Name name, long phone, String emailId, short gender, Date dob, Date doj) {
+	public Member(short memberType, Name name, String emailId, short gender, Date dob, Date doj) {
 		super();
 		this.memberType = memberType;
-		this.phone = phone;
 		this.emailId = emailId;
 		this.gender = gender;
 		this.dob = dob;
@@ -111,12 +113,12 @@ public class Member {
 		this.memberType = memberType;
 	}
 
-	public long getPhone() {
-		return phone;
+	public Collection<Phone> getPhones() {
+		return phones;
 	}
 
-	public void setPhone(long phone) {
-		this.phone = phone;
+	public void setPhones(Collection<Phone> phones) {
+		this.phones = phones;
 	}
 
 	public String getEmailId() {

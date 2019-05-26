@@ -6,15 +6,21 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "node")
+@Inheritance(strategy= InheritanceType.JOINED)
 public class Node {
 	@Id
 	@GeneratedValue
 	@Column(name = "data_id")
 	private int dataId;
+	
+	@Column(name = "name")
+	private String name;
 
 	@Column(name = "subtype")
 	private int subType;
@@ -42,9 +48,10 @@ public class Node {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Node(int subType, String createdBy, Date createdDate, String modifiedby, Date modifieddate, int childCount,
-			String extendedData) {
+	public Node(String name, int subType, String createdBy, Date createdDate, String modifiedby, Date modifieddate,
+			int childCount, String extendedData) {
 		super();
+		this.name = name;
 		this.subType = subType;
 		this.createdBy = createdBy;
 		this.createdDate = createdDate;
@@ -52,6 +59,15 @@ public class Node {
 		this.modifieddate = modifieddate;
 		this.childCount = childCount;
 		this.extendedData = extendedData;
+	}
+
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getDataId() {
