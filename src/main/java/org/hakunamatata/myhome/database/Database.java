@@ -19,11 +19,9 @@ import org.hakunamatata.myhome.model.Node;
 import org.hakunamatata.myhome.model.Phone;
 import org.hakunamatata.myhome.model.Vehicle;
 import org.hibernate.query.Query;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.criterion.Restrictions;
 
 public class Database {
 

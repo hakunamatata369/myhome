@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -51,7 +52,7 @@ public class Member {
 	@Embedded
 	private Name name;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@JoinTable(name = "phone", joinColumns = @JoinColumn(name = "member_id"))
 	@GenericGenerator(name = "sequence_gen", strategy = "sequence")
 	@CollectionId(columns = { @Column(name = "phone_id") }, generator = "sequence_gen", type = @Type(type = "long"))

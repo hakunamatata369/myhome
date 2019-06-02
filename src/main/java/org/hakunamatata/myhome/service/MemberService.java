@@ -1,38 +1,59 @@
 package org.hakunamatata.myhome.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.hakunamatata.myhome.database.Database;
+import org.hakunamatata.myhome.dao.MemberDao;
 import org.hakunamatata.myhome.model.Member;
 
 public class MemberService {
 
-    private Map<Long, Member> members = Database.getMembers();
+	private static MemberDao memberDao;
 
-    public List<Member> getAllMembers() {
-	return new ArrayList<Member>(members.values());
-    }
+	public MemberService() {
+		memberDao = new MemberDao();
+	}
 
-    public Member getMember(long memberId) {
-	return members.get(memberId);
-    }
+	public void addMember(Member member) {
+		memberDao.openCurrentSessionwithTransaction();
+		memberDao.save(member);
+		memberDao.closeCurrentSessionwithTransaction();
+	}
 
-    public Member addMember(Member member) {
-	member.setMemberId(members.size() + 1);
-	members.put(member.getMemberId(), member);
-	return member;
-    }
+	public void updateMember(Member member) {
+		memberDao.openCurrentSessionwithTransaction();
+		memberDao.update(member);
+		memberDao.closeCurrentSessionwithTransaction();
+	}
 
-    public Member updateMember(Member member) {
-	if (member.getMemberId() <= 0)
-	    return null;
-	members.put((long)member.getMemberId(), member);
-	return member;
-    }
+	public Member getMember(long id) {
+		memberDao.openCurrentSession();
+		Member member = memberDao.getById(id);
+		memberDao.closeCurrentSession();
+		return member;
+	}
 
-    public Member deleteMember(long memberId) {
-	return members.remove(memberId);
-    }
+	public void deleteMember(long id) {
+		memberDao.openCurrentSessionwithTransaction();
+		Member member = memberDao.getById(id);
+		memberDao.delete(member);
+		memberDao.closeCurrentSessionwithTransaction();
+	}
+
+	public List<Member> getAllMembers() {
+		memberDao.openCurrentSession();
+		List<Member> members = memberDao.getAll();
+		memberDao.closeCurrentSession();
+		return members;
+	}
+
+	public void deleteAll() {
+		memberDao.openCurrentSessionwithTransaction();
+		memberDao.deleteAll();
+		memberDao.closeCurrentSessionwithTransaction();
+	}
+
+	public MemberDao memberDao() {
+		return memberDao;
+	}
+
 }
