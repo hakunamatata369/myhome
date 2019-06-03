@@ -7,9 +7,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "vehicle")
+@XmlRootElement(name = "vehicle")
 public class Vehicle {
 
 	@Id

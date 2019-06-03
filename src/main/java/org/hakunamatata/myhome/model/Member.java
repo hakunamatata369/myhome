@@ -22,7 +22,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -181,6 +184,7 @@ public class Member {
 		links.add(link);
 	}
 
+	@XmlTransient
 	public Collection<Address> getAddresses() {
 		return addresses;
 	}
@@ -189,6 +193,7 @@ public class Member {
 		this.addresses = addresses;
 	}
 
+	@XmlTransient
 	public Collection<Node> getFavourites() {
 		return favourites;
 	}
@@ -197,6 +202,7 @@ public class Member {
 		this.favourites = favourites;
 	}
 
+	@XmlTransient
 	public Collection<Vehicle> getOwnedVehicles() {
 		return ownedVehicles;
 	}
@@ -205,6 +211,7 @@ public class Member {
 		this.ownedVehicles = ownedVehicles;
 	}
 
+	@XmlTransient
 	public Collection<Member> getChilds() {
 		return childs;
 	}
