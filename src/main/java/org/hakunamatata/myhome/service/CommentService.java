@@ -45,7 +45,7 @@ public class CommentService {
     }
 
     public Comment getComment(long commentId) {
-	ErrorMessage errorMessage = new ErrorMessage("Not Found",404,"");
+	ErrorMessage errorMessage = new ErrorMessage("Not Found",404);
 	
 	Response response = Response.status(Status.NOT_FOUND)
 		.entity(errorMessage)

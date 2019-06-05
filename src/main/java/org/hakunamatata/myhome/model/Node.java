@@ -9,15 +9,17 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "node")
 @Inheritance(strategy= InheritanceType.JOINED)
+@XmlRootElement
 public class Node {
 	@Id
 	@GeneratedValue
 	@Column(name = "data_id")
-	private int dataId;
+	private long dataId;
 	
 	@Column(name = "name")
 	private String name;
@@ -70,11 +72,11 @@ public class Node {
 		this.name = name;
 	}
 
-	public int getDataId() {
+	public long getDataId() {
 		return dataId;
 	}
 
-	public void setDataId(int dataId) {
+	public void setDataId(long dataId) {
 		this.dataId = dataId;
 	}
 

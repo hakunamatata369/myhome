@@ -22,8 +22,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.persistence.UniqueConstraint;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -41,7 +40,7 @@ import org.hibernate.annotations.Type;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "member")
 @NamedQuery(name = "Member.getNamebyId", query = "select name from Member where memberId = ?1")
-@NamedNativeQuery(name= "Member.byFirstName", query = "select * from member where first_name = ?1", resultClass = Member.class)
+@NamedNativeQuery(name = "Member.byFirstName", query = "select * from member where first_name = ?1", resultClass = Member.class)
 public class Member {
 
 	@Id
@@ -77,8 +76,9 @@ public class Member {
 	@Column(name = "date_of_joinning")
 	private Date doj;
 
-	@OneToMany
-	@JoinTable(name = "favorites", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "data_id"))
+	@ManyToMany
+	@JoinTable(name = "favourites", uniqueConstraints = { @UniqueConstraint(columnNames = { "member_id",
+			"data_id" }) }, joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "data_id"))
 	private Collection<Node> favourites = new ArrayList<>();
 
 	@OneToMany(mappedBy = "vehicleOwner", cascade = CascadeType.ALL)

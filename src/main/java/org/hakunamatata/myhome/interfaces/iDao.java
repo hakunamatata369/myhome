@@ -2,7 +2,7 @@ package org.hakunamatata.myhome.interfaces;
 
 import java.util.List;
 
-public interface Dao<T> {
+public interface iDao<T> {
 
 	void save(T entity);
 

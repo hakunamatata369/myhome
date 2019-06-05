@@ -3,6 +3,7 @@ package org.hakunamatata.myhome.service;
 import java.util.List;
 
 import org.hakunamatata.myhome.dao.MemberDao;
+import org.hakunamatata.myhome.database.HibernateUtil;
 import org.hakunamatata.myhome.model.Member;
 
 public class MemberService {
@@ -14,42 +15,42 @@ public class MemberService {
 	}
 
 	public void addMember(Member member) {
-		memberDao.openCurrentSessionwithTransaction();
+		HibernateUtil.openCurrentSessionwithTransaction();
 		memberDao.save(member);
-		memberDao.closeCurrentSessionwithTransaction();
+		HibernateUtil.closeCurrentSessionwithTransaction();
 	}
 
 	public void updateMember(Member member) {
-		memberDao.openCurrentSessionwithTransaction();
+		HibernateUtil.openCurrentSessionwithTransaction();
 		memberDao.update(member);
-		memberDao.closeCurrentSessionwithTransaction();
+		HibernateUtil.closeCurrentSessionwithTransaction();
 	}
 
 	public Member getMember(long id) {
-		memberDao.openCurrentSession();
+		HibernateUtil.openCurrentSession();
 		Member member = memberDao.getById(id);
-		memberDao.closeCurrentSession();
+		HibernateUtil.closeCurrentSession();
 		return member;
 	}
 
 	public void deleteMember(long id) {
-		memberDao.openCurrentSessionwithTransaction();
+		HibernateUtil.openCurrentSessionwithTransaction();
 		Member member = memberDao.getById(id);
 		memberDao.delete(member);
-		memberDao.closeCurrentSessionwithTransaction();
+		HibernateUtil.closeCurrentSessionwithTransaction();
 	}
 
 	public List<Member> getAllMembers() {
-		memberDao.openCurrentSession();
+		HibernateUtil.openCurrentSession();
 		List<Member> members = memberDao.getAll();
-		memberDao.closeCurrentSession();
+		HibernateUtil.closeCurrentSession();
 		return members;
 	}
 
 	public void deleteAll() {
-		memberDao.openCurrentSessionwithTransaction();
+		HibernateUtil.openCurrentSessionwithTransaction();
 		memberDao.deleteAll();
-		memberDao.closeCurrentSessionwithTransaction();
+		HibernateUtil.closeCurrentSessionwithTransaction();
 	}
 
 	public MemberDao memberDao() {

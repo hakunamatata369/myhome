@@ -11,7 +11,6 @@ import javax.persistence.criteria.Root;
 
 import org.hakunamatata.myhome.model.Address;
 import org.hakunamatata.myhome.model.Comment;
-import org.hakunamatata.myhome.model.Favourite;
 import org.hakunamatata.myhome.model.House;
 import org.hakunamatata.myhome.model.Member;
 import org.hakunamatata.myhome.model.Name;
@@ -27,7 +26,6 @@ public class Database {
 
 	private static Map<Long, Comment> comments = new HashMap<>();
 	private static Map<Long, Member> members = new HashMap<>();
-	private static Map<Long, Favourite> favourites = new HashMap<>();
 
 	public static Map<Long, Comment> getComments() {
 
@@ -51,17 +49,6 @@ public class Database {
 		members.put(m2.getMemberId(), m2);
 
 		return members;
-	}
-
-	public static Map<Long, Favourite> getFavourites() {
-
-		Favourite f1 = new Favourite(1000, 2000);
-		Favourite f2 = new Favourite(1000, 2001);
-
-		favourites.put(1L, f1);
-		favourites.put(2L, f2);
-
-		return favourites;
 	}
 
 	public static void main(String args[]) {
@@ -113,6 +100,8 @@ public class Database {
 		session.beginTransaction();
 		
 		Member temp_member = (Member) session.get(Member.class,1L);
+		Node node = (Node) session.get(Node.class, 2L);
+		System.out.println(node.getName());
 		System.out.println(temp_member.getName().toString());
 		temp_member.setEmailId("abcd@abc.com");
 		session.update(temp_member);

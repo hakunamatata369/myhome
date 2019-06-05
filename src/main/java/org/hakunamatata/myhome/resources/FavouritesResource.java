@@ -1,36 +1,48 @@
 package org.hakunamatata.myhome.resources;
 
-import java.util.List;
+import java.util.Collection;
 
-import javax.ws.rs.DELETE;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import org.hakunamatata.myhome.model.Favourite;
+import org.hakunamatata.myhome.model.Node;
+import org.hakunamatata.myhome.model.ResponseMessage;
 import org.hakunamatata.myhome.service.FavouriteService;
 
 @Path("/")
+@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class FavouritesResource {
 
-    FavouriteService favouriteService = new FavouriteService();
+	ResponseMessage responseMessage;
+	FavouriteService favouriteService = new FavouriteService();
 
-    @GET
-    public List<Favourite> getAllFavourites() {
-	return favouriteService.getAllFavourites();
-    }
+	@GET
+	public Collection<Node> getAllFavourites(@PathParam("memberId") Long memberId) {
+		return favouriteService.getAllFavourites(memberId);
+	}
 
-    @POST
-    @Path("/{dataId}")
-    public Favourite addFavourite(@PathParam("memberId") Long memberId, @PathParam("dataId") Long dataId) {
-	return favouriteService.addFavourite( new Favourite( memberId, dataId ));
-    }
+	@PUT
+	@Path("/{dataId}")
+	public Response addFavourite(@PathParam("memberId") Long memberId, @PathParam("dataId") Long dataId,
+			@QueryParam("action") String action) {
+		if (action.equals("add")) {
+			favouriteService.addFavourite(memberId, dataId);
+			responseMessage = new ResponseMessage("Successfully added as a favourite", 200);
+		} else if (action.equals("remove")) {
+			favouriteService.removeFavourite(memberId, dataId);
+			responseMessage = new ResponseMessage("Successfully removed as a favourite", 200);
+		} else {
+			responseMessage = new ResponseMessage("Unknown action specified", 200);
+		}
 
-    @DELETE
-    @Path("/{dataId}")
-    public void removeFavourite(@PathParam("memberId") Long memberId, @PathParam("dataId") Long dataId) {
-	favouriteService.removeFavourite( new Favourite( memberId, dataId ) );
-    }
-
+		return Response.ok(responseMessage).build();
+	}
 }
