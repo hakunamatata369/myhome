@@ -61,7 +61,8 @@ public class Database {
 			Vehicle v1 = new Vehicle(1, "Xylo", m1);
 			m1.getOwnedVehicles().add(v1);
 			
-			Node apartment = new Node("9star hills apartment", 1,  "Admin", new Date(), null, null, 0, null);
+			long parentId = 2000;
+			Node apartment = new Node(parentId, "9star hills apartment", 1,  "Admin", new Date(), null, null, 0, null);
 			m1.getFavourites().add(apartment);
 			
 			Phone phone1 = new Phone(1,9876543);
@@ -76,8 +77,9 @@ public class Database {
 		m1.getAddresses().add(home_addr);
 		m1.getAddresses().add(work_addr);
 
-		House h1 = new House("testhome1", 1,  "Admin", new Date(), null, null, 0, null);
-		h1.setHouseAddress(home_addr);
+		Address house_address = new Address("9star hills residency", "hyderabad", "telangana", "india", 500089, 1, "Home");
+		House h1 = new House(parentId,"testhome1", 1,  "Admin", new Date(), null, null, 0, null);
+		h1.setHouseAddress(house_address);
 		h1.setHouseType(1);
 		
 		SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();

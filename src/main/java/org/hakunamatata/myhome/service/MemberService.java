@@ -49,7 +49,7 @@ public class MemberService {
 		return members;
 	}
 
-	public void deleteAll() {
+	public void deleteAllMembers() {
 		HibernateUtil.openCurrentSessionwithTransaction();
 		memberDao.deleteAll();
 		HibernateUtil.closeCurrentSessionwithTransaction();

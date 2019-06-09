@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -20,7 +21,10 @@ public class Node {
 	@GeneratedValue
 	@Column(name = "data_id")
 	private long dataId;
-	
+
+	@Column(name = "parent_id")
+	private long parentId;
+
 	@Column(name = "name")
 	private String name;
 
@@ -43,6 +47,7 @@ public class Node {
 	private int childCount;
 
 	@Column(name = "extended_data")
+	@Lob
 	private String extendedData;
 
 	public Node() {
@@ -50,9 +55,10 @@ public class Node {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Node(String name, int subType, String createdBy, Date createdDate, String modifiedby, Date modifieddate,
+	public Node(long parentId, String name, int subType, String createdBy, Date createdDate, String modifiedby, Date modifieddate,
 			int childCount, String extendedData) {
 		super();
+		this.parentId = parentId;
 		this.name = name;
 		this.subType = subType;
 		this.createdBy = createdBy;
@@ -78,6 +84,14 @@ public class Node {
 
 	public void setDataId(long dataId) {
 		this.dataId = dataId;
+	}
+
+	public long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(long parentId) {
+		this.parentId = parentId;
 	}
 
 	public int getSubType() {

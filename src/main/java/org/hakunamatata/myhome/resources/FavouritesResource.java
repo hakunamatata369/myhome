@@ -16,7 +16,6 @@ import org.hakunamatata.myhome.model.Node;
 import org.hakunamatata.myhome.model.ResponseMessage;
 import org.hakunamatata.myhome.service.FavouriteService;
 
-@Path("/")
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class FavouritesResource {
@@ -31,7 +30,7 @@ public class FavouritesResource {
 
 	@PUT
 	@Path("/{dataId}")
-	public Response addFavourite(@PathParam("memberId") Long memberId, @PathParam("dataId") Long dataId,
+	public Response addOrRemoveFavourite(@PathParam("memberId") Long memberId, @PathParam("dataId") Long dataId,
 			@QueryParam("action") String action) {
 		if (action.equals("add")) {
 			favouriteService.addFavourite(memberId, dataId);
@@ -40,7 +39,7 @@ public class FavouritesResource {
 			favouriteService.removeFavourite(memberId, dataId);
 			responseMessage = new ResponseMessage("Successfully removed as a favourite", 200);
 		} else {
-			responseMessage = new ResponseMessage("Unknown action specified", 200);
+			responseMessage = new ResponseMessage("Unknown action specified", 500);
 		}
 
 		return Response.ok(responseMessage).build();

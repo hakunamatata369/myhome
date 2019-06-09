@@ -76,7 +76,7 @@ public class Member {
 	@Column(name = "date_of_joinning")
 	private Date doj;
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "favourites", uniqueConstraints = { @UniqueConstraint(columnNames = { "member_id",
 			"data_id" }) }, joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "data_id"))
 	private Collection<Node> favourites = new ArrayList<>();
@@ -84,7 +84,7 @@ public class Member {
 	@OneToMany(mappedBy = "vehicleOwner", cascade = CascadeType.ALL)
 	private Collection<Vehicle> ownedVehicles = new ArrayList<>();
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "member_relations", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "child_id "))
 	private Collection<Member> childs = new ArrayList<>();
 

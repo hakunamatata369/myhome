@@ -2,6 +2,7 @@ package org.hakunamatata.myhome.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -17,7 +18,7 @@ public class House extends Node {
 	@Column(name = "house_type")
 	private int houseType;
 
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="house_address")
 	private Address houseAddress;
 
@@ -56,9 +57,9 @@ public class House extends Node {
 		// TODO Auto-generated constructor stub
 	}
 
-	public House(String name, int subType, String createdBy, Date createdDate, String modifiedby, Date modifieddate,
+	public House(long parentId, String name, int subType, String createdBy, Date createdDate, String modifiedby, Date modifieddate,
 			int childCount, String extendedData) {
-		super(name, subType, createdBy, createdDate, modifiedby, modifieddate, childCount, extendedData);
+		super(parentId, name, subType, createdBy, createdDate, modifiedby, modifieddate, childCount, extendedData);
 		// TODO Auto-generated constructor stub
 	}
 

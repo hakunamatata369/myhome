@@ -43,6 +43,7 @@ public class MembersResource {
 		Member member = memberService.getMember(id);
 		member.addLink(getSelfUri(id).toString(), "self");
 		member.addLink(getFavouritesUri(id).toString(), "favourites");
+		member.addLink(getAddressUri(id).toString(), "addresses");
 
 		return Response.ok(member)
 				.links(Link.fromUri(uriInfo.getAbsolutePath()).rel("self").type("GET").build())
@@ -72,11 +73,23 @@ public class MembersResource {
 		return Response.ok(responseMessage).build();
 	}
 
+	@DELETE
+	public Response deleteMembers() {
+		memberService.deleteAllMembers();
+		responseMessage = new ResponseMessage("Successfully deleted all the members", 200 );
+		return Response.ok(responseMessage).build();
+	}
+
 	@Path("/{memberId}/favourites")
 	public FavouritesResource getFavouritesResource() {
 		return new FavouritesResource();
 	}
 
+	@Path("/{memberId}/addresses")
+	public MemberAddressResource getMemberAddressResource() {
+		return new MemberAddressResource();
+	}
+	
 	private URI getSelfUri(long id) {
 		return uriInfo.getAbsolutePath();
 	}
@@ -86,4 +99,8 @@ public class MembersResource {
 				.path(MembersResource.class, "getFavouritesResource").resolveTemplate("memberId", id).build();
 	}
 
+	private Object getAddressUri(long id) {
+		return uriInfo.getBaseUriBuilder().path(MembersResource.class)
+				.path(MembersResource.class, "getMemberAddressResource").resolveTemplate("memberId", id).build();
+	}
 }
