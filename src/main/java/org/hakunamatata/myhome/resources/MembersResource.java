@@ -12,10 +12,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.hakunamatata.myhome.model.Member;
+import org.hakunamatata.myhome.model.ResponseMessage;
 import org.hakunamatata.myhome.service.MemberService;
 
 @Path("members")
@@ -25,6 +28,7 @@ public class MembersResource {
 
 	@Context
 	UriInfo uriInfo;
+	ResponseMessage responseMessage;
 	MemberService memberService = new MemberService();
 
 	@GET
@@ -34,11 +38,43 @@ public class MembersResource {
 
 	@GET
 	@Path("/{memberId}")
-	public Member getMember(@PathParam("memberId") long id) {
+	public Response getMember(@PathParam("memberId") long id) {
+
 		Member member = memberService.getMember(id);
 		member.addLink(getSelfUri(id).toString(), "self");
 		member.addLink(getFavouritesUri(id).toString(), "favourites");
-		return member;
+
+		return Response.ok(member)
+				.links(Link.fromUri(uriInfo.getAbsolutePath()).rel("self").type("GET").build())
+				.links(Link.fromUri((URI)getFavouritesUri(id)).rel("favourites").type("GET").build())
+				.build();
+	}
+
+	@POST
+	public Response addMember(Member member) {
+		member = memberService.addMember(member);
+		return Response.created(uriInfo.getAbsolutePath()).entity(member).build();
+	}
+
+	@PUT
+	@Path("/{memberId}")
+	public Response updateMember(Member member, @PathParam("memberId") long id) {
+		member.setMemberId(id);
+		memberService.updateMember(member);
+		return Response.ok(member).build();
+	}
+
+	@DELETE
+	@Path("/{memberId}")
+	public Response deleteMember(@PathParam("memberId") long id) {
+		memberService.deleteMember(id);
+		responseMessage = new ResponseMessage("Successfully deleted the memeber with Id:"+id, 200 );
+		return Response.ok(responseMessage).build();
+	}
+
+	@Path("/{memberId}/favourites")
+	public FavouritesResource getFavouritesResource() {
+		return new FavouritesResource();
 	}
 
 	private URI getSelfUri(long id) {
@@ -48,29 +84,6 @@ public class MembersResource {
 	private Object getFavouritesUri(long id) {
 		return uriInfo.getBaseUriBuilder().path(MembersResource.class)
 				.path(MembersResource.class, "getFavouritesResource").resolveTemplate("memberId", id).build();
-	}
-
-	@POST
-	public void addMember(Member member) {
-		memberService.addMember(member);
-	}
-
-	@PUT
-	@Path("/{memberId}")
-	public void updateMember(Member member, @PathParam("memberId") long id) {
-		member.setMemberId(id);
-		memberService.updateMember(member);
-	}
-
-	@DELETE
-	@Path("/{memberId}")
-	public void deleteMember(@PathParam("memberId") long id) {
-		memberService.deleteMember(id);
-	}
-
-	@Path("/{memberId}/favourites")
-	public FavouritesResource getFavouritesResource() {
-		return new FavouritesResource();
 	}
 
 }

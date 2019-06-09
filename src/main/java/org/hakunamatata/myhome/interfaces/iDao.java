@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface iDao<T> {
 
-	void save(T entity);
+	public T save(T entity);
 
-	public void update(T entity);
+	public T update(T entity);
 
 	public T getById(long id);
 

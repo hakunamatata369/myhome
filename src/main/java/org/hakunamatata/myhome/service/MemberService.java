@@ -14,16 +14,18 @@ public class MemberService {
 		memberDao = new MemberDao();
 	}
 
-	public void addMember(Member member) {
+	public Member addMember(Member member) {
 		HibernateUtil.openCurrentSessionwithTransaction();
-		memberDao.save(member);
+		member = memberDao.save(member);
 		HibernateUtil.closeCurrentSessionwithTransaction();
+		return member;
 	}
 
-	public void updateMember(Member member) {
+	public Member updateMember(Member member) {
 		HibernateUtil.openCurrentSessionwithTransaction();
 		memberDao.update(member);
 		HibernateUtil.closeCurrentSessionwithTransaction();
+		return member;
 	}
 
 	public Member getMember(long id) {

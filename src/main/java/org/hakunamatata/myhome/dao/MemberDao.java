@@ -14,20 +14,22 @@ public class MemberDao implements iDao<Member> {
 	public MemberDao() {
 	}
 
-	public void save(Member member) {
+	public Member save(Member member) {
 		try {
 			HibernateUtil.getCurrentSession().save(member);
 		} catch (PersistenceException e) {
 			throw new PersistenceException(e.getMessage());
 		}
+		return member;
 	}
 
-	public void update(Member member) {
+	public Member update(Member member) {
 		try {
 			HibernateUtil.getCurrentSession().update(member);
 		} catch (PersistenceException e) {
 			throw new PersistenceException(e.getMessage());
 		}
+		return member;
 	}
 
 	public Member getById(long id) {

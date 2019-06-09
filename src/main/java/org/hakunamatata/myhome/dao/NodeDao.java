@@ -12,21 +12,23 @@ import org.hakunamatata.myhome.model.Node;
 public class NodeDao extends HibernateUtil implements iDao<Node> {
 
 	@Override
-	public void save(Node node) {
+	public Node save(Node node) {
 		try {
 			HibernateUtil.getCurrentSession().save(node);
 		} catch (PersistenceException e) {
 			throw new PersistenceException(e.getMessage());
 		}
+		return node;
 	}
 
 	@Override
-	public void update(Node node) {
+	public Node update(Node node) {
 		try {
 			HibernateUtil.getCurrentSession().update(node);
 		} catch (PersistenceException e) {
 			throw new PersistenceException(e.getMessage());
 		}
+		return node;
 	}
 
 	@Override
