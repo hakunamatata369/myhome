@@ -34,7 +34,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 import org.hibernate.annotations.Type;
 
 @XmlRootElement
-@Entity
+@Entity(name="Member")
 @SelectBeforeUpdate
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
