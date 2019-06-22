@@ -28,65 +28,66 @@ import org.hakunamatata.myhome.service.CommentService;
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class CommentsResource {
 
-    @Context 
-    UriInfo uriInfo;
+	@Context
+	private UriInfo uriInfo;
+	@PathParam("commentId")
+	private long commentId;
 
-    CommentService commentService = new CommentService();
+	CommentService commentService = new CommentService();
 
-    @GET
-    public List<Comment> getComments(@BeanParam ResourceFilterBean resourceFilterBean) {
+	@GET
+	public List<Comment> getComments(@BeanParam ResourceFilterBean resourceFilterBean) {
 
-	/*
-	  public List<Comment> getComments(@DefaultValue("-1") @QueryParam("year") int year,
-	  				    @DefaultValue("-1") @QueryParam("start") int start,
-	  				    @DefaultValue("-1") @QueryParam("size") int size) {
-	*/ 
+		/*
+		  public List<Comment> getComments(@DefaultValue("-1") @QueryParam("year") int year,
+		  				    @DefaultValue("-1") @QueryParam("start") int start,
+		  				    @DefaultValue("-1") @QueryParam("size") int size) {
+		*/
 
-	int year = resourceFilterBean.getYear();
-	int start = resourceFilterBean.getStart();
-	int size = resourceFilterBean.getSize();
+		int year = resourceFilterBean.getYear();
+		int start = resourceFilterBean.getStart();
+		int size = resourceFilterBean.getSize();
 
-	if (year > 0) {
-	    return commentService.getAllCommentsByYear(year);
+		if (year > 0) {
+			return commentService.getAllCommentsByYear(year);
+		}
+		if (start >= 0 && size >= 0) {
+			return commentService.getAllCommentsPaginated(start, size);
+		}
+		return commentService.getAllComments();
 	}
-	if (start >= 0 && size >= 0) {
-	    return commentService.getAllCommentsPaginated(start, size);
+
+	@GET
+	@Path("/{commentId}")
+	public Comment getComment() {
+		return commentService.getComment(commentId);
 	}
-	return commentService.getAllComments();
-    }
 
-    @GET
-    @Path("/{commentId}")
-    public Comment getComment(@PathParam("commentId") long id) {
-	return commentService.getComment(id);
-    }
+	@POST
+	public Response addComment(Comment comment) {
+		Comment newComment = commentService.addComment(comment);
+		newComment.addLink(getSelfUri(newComment.getCommentId()).toString(), "self");
+		return Response.created(getSelfUri(newComment.getCommentId())).entity(newComment).build();
+	}
 
-    @POST
-    public Response addComment(Comment comment) {
-	Comment newComment = commentService.addComment(comment);
-	newComment.addLink(getSelfUri(newComment.getCommentId()).toString(), "self");
-	return Response.created(getSelfUri(newComment.getCommentId()))
-		.entity(newComment).build();
-    }
+	@PUT
+	@Path("/{commentId}")
+	public Comment updateComment(Comment comment) {
+		comment.setCommentId(commentId);
 
-    @PUT
-    @Path("/{commentId}")
-    public Comment updateComment(Comment comment, @PathParam("commentId") long id) {
-	comment.setCommentId(id);
+		Comment updateComment = commentService.updateComment(comment);
+		updateComment.addLink(getSelfUri(commentId).toString(), "self");
 
-	Comment updateComment = commentService.updateComment(comment);
-	updateComment.addLink(getSelfUri(id).toString(), "self");
+		return updateComment;
+	}
 
-	return updateComment;
-    }
+	private URI getSelfUri(long id) {
+		return uriInfo.getAbsolutePathBuilder().path(String.valueOf(id)).build();
+	}
 
-    private URI getSelfUri(long id) {
-	return uriInfo.getAbsolutePathBuilder().path(String.valueOf(id)).build();
-    }
-
-    @DELETE
-    @Path("/{commentId}")
-    public void deleteComment(@PathParam("commentId") long id) {
-	commentService.deleteComment(id);
-    }
+	@DELETE
+	@Path("/{commentId}")
+	public void deleteComment() {
+		commentService.deleteComment(commentId);
+	}
 }

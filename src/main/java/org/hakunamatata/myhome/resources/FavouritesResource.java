@@ -20,18 +20,19 @@ import org.hakunamatata.myhome.service.FavouriteService;
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class FavouritesResource {
 
-	ResponseMessage responseMessage;
-	FavouriteService favouriteService = new FavouriteService();
+	@PathParam("memberId")
+	private Long memberId;
+	private ResponseMessage responseMessage;
+	private FavouriteService favouriteService = new FavouriteService();
 
 	@GET
-	public Collection<Node> getAllFavourites(@PathParam("memberId") Long memberId) {
+	public Collection<Node> getAllFavourites() {
 		return favouriteService.getAllFavourites(memberId);
 	}
 
 	@PUT
 	@Path("/{dataId}")
-	public Response addOrRemoveFavourite(@PathParam("memberId") Long memberId, @PathParam("dataId") Long dataId,
-			@QueryParam("action") String action) {
+	public Response addOrRemoveFavourite(@PathParam("dataId") Long dataId, @QueryParam("action") String action) {
 		if (action.equals("add")) {
 			favouriteService.addFavourite(memberId, dataId);
 			responseMessage = new ResponseMessage("Successfully added as a favourite", 200);

@@ -27,9 +27,11 @@ import org.hakunamatata.myhome.service.AddressService;
 public class AddressResource {
 
 	@Context
-	UriInfo uriInfo;
-	ResponseMessage responseMessage;
-	AddressService addressService = new AddressService();
+	private UriInfo uriInfo;
+	@PathParam("addressId")
+	private long addressId;
+	private ResponseMessage responseMessage;
+	private AddressService addressService = new AddressService();
 
 	@GET
 	public List<Address> getAddresses() {
@@ -38,8 +40,8 @@ public class AddressResource {
 
 	@GET
 	@Path("/{addressId}")
-	public Address getAddress(@PathParam("addressId") long id) {
-		return addressService.getAddress(id);
+	public Address getAddress() {
+		return addressService.getAddress(addressId);
 	}
 
 	@POST
@@ -52,8 +54,8 @@ public class AddressResource {
 
 	@PUT
 	@Path("/{addressId}")
-	public Address updateAddress(Address address, @PathParam("addressId") long id) {
-		address.setAddressId(id);
+	public Address updateAddress(Address address) {
+		address.setAddressId(addressId);
 
 		Address updateAddress = addressService.updateAddress(address);
 
@@ -62,12 +64,12 @@ public class AddressResource {
 
 	@DELETE
 	@Path("/{addressId}")
-	public Response deleteAddress(@PathParam("addressId") long id) {
-		responseMessage = new ResponseMessage("Successfully deleted the address with addressId :"+id, 200);
-		addressService.deleteAddress(id);
+	public Response deleteAddress() {
+		responseMessage = new ResponseMessage("Successfully deleted the address with addressId :" + addressId, 200);
+		addressService.deleteAddress(addressId);
 		return Response.ok(responseMessage).build();
 	}
-	
+
 	@DELETE
 	public Response deleteAddresses() {
 		responseMessage = new ResponseMessage("Successfully deleted all the addresses", 200);

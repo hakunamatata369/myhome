@@ -20,18 +20,19 @@ import org.hakunamatata.myhome.service.AddressService;
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public class MemberAddressResource {
 
-	ResponseMessage responseMessage;
-	AddressService addressService = new AddressService();
+	@PathParam("memberId")
+	private Long memberId;
+	private ResponseMessage responseMessage;
+	private AddressService addressService = new AddressService();
 
 	@GET
-	public Collection<Address> getAllAddresses(@PathParam("memberId") Long memberId) {
+	public Collection<Address> getAllAddresses() {
 		return addressService.getAllMemberAddresses(memberId);
 	}
 
 	@PUT
 	@Path("/{dataId}")
-	public Response addOrRemoveAddress(@PathParam("memberId") Long memberId, @PathParam("dataId") Long dataId,
-			@QueryParam("action") String action) {
+	public Response addOrRemoveAddress(@PathParam("dataId") Long dataId, @QueryParam("action") String action) {
 		if (action.equals("add")) {
 			addressService.addMemberAddress(memberId, dataId);
 			responseMessage = new ResponseMessage("Successfully added the address", 200);

@@ -31,6 +31,10 @@ public class MembersResource {
 	ResponseMessage responseMessage;
 	MemberService memberService = new MemberService();
 
+	// Common path parameter that can used by multiple methods.
+	@PathParam("memberId")
+	private long memberId;
+
 	@GET
 	public List<Member> getMembers() {
 		return memberService.getAllMembers();
@@ -38,16 +42,16 @@ public class MembersResource {
 
 	@GET
 	@Path("/{memberId}")
-	public Response getMember(@PathParam("memberId") long id) {
+	public Response getMember() {
 
-		Member member = memberService.getMember(id);
-		member.addLink(getSelfUri(id).toString(), "self");
-		member.addLink(getFavouritesUri(id).toString(), "favourites");
-		member.addLink(getAddressUri(id).toString(), "addresses");
+		Member member = memberService.getMember(memberId);
+		member.addLink(getSelfUri(memberId).toString(), "self");
+		member.addLink(getFavouritesUri(memberId).toString(), "favourites");
+		member.addLink(getAddressUri(memberId).toString(), "addresses");
 
 		return Response.ok(member)
 				.links(Link.fromUri(uriInfo.getAbsolutePath()).rel("self").type("GET").build())
-				.links(Link.fromUri((URI)getFavouritesUri(id)).rel("favourites").type("GET").build())
+				.links(Link.fromUri((URI) getFavouritesUri(memberId)).rel("favourites").type("GET").build())
 				.build();
 	}
 
@@ -59,24 +63,24 @@ public class MembersResource {
 
 	@PUT
 	@Path("/{memberId}")
-	public Response updateMember(Member member, @PathParam("memberId") long id) {
-		member.setMemberId(id);
+	public Response updateMember(Member member) {
+		member.setMemberId(memberId);
 		memberService.updateMember(member);
 		return Response.ok(member).build();
 	}
 
 	@DELETE
 	@Path("/{memberId}")
-	public Response deleteMember(@PathParam("memberId") long id) {
-		memberService.deleteMember(id);
-		responseMessage = new ResponseMessage("Successfully deleted the memeber with Id:"+id, 200 );
+	public Response deleteMember() {
+		memberService.deleteMember(memberId);
+		responseMessage = new ResponseMessage("Successfully deleted the memeber with Id:" + memberId, 200);
 		return Response.ok(responseMessage).build();
 	}
 
 	@DELETE
 	public Response deleteMembers() {
 		memberService.deleteAllMembers();
-		responseMessage = new ResponseMessage("Successfully deleted all the members", 200 );
+		responseMessage = new ResponseMessage("Successfully deleted all the members", 200);
 		return Response.ok(responseMessage).build();
 	}
 
@@ -89,7 +93,7 @@ public class MembersResource {
 	public MemberAddressResource getMemberAddressResource() {
 		return new MemberAddressResource();
 	}
-	
+
 	private URI getSelfUri(long id) {
 		return uriInfo.getAbsolutePath();
 	}

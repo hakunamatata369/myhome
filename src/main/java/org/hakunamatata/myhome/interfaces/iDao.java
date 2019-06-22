@@ -27,7 +27,7 @@ public interface iDao<T> {
 		return entity;
 	}
 
-	default T getById(Class <T> entityClass, long id){
+	default T getById(Class<T> entityClass, long id){
 		T entity = (T) HibernateUtil.getCurrentSession().get(entityClass, id);
 		if (entity == null) {
 			throw new DataNotFoundException("Node with id : " + id + " is not available");
