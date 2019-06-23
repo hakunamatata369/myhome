@@ -78,7 +78,7 @@ public class Database {
 		m1.getAddresses().add(work_addr);
 
 		Address house_address = new Address("9star hills residency", "hyderabad", "telangana", "india", 500089, 1, "Home");
-		House h1 = new House(parentId,"testhome1", 1,  "Admin", new Date(), null, null, 0, null);
+		House h1 = new House(parentId,"testhome1", 1002,  "Admin", new Date(), null, null, 0, null);
 		h1.setHouseAddress(house_address);
 		h1.setHouseType(1);
 		

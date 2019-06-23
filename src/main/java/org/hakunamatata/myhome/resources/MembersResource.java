@@ -73,7 +73,7 @@ public class MembersResource {
 	@Path("/{memberId}")
 	public Response deleteMember() {
 		memberService.deleteMember(memberId);
-		responseMessage = new ResponseMessage("Successfully deleted the memeber with Id:" + memberId, 200);
+		responseMessage = new ResponseMessage("Successfully deleted the member with Id:" + memberId, 200);
 		return Response.ok(responseMessage).build();
 	}
 
