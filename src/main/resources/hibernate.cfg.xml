@@ -26,5 +26,7 @@
 		<mapping class="org.hakunamatata.myhome.model.Node" />
 		<mapping class="org.hakunamatata.myhome.model.Vehicle" />
 		<mapping class="org.hakunamatata.myhome.model.House" />
+		<mapping class="org.hakunamatata.myhome.model.Comment" />
+		<mapping class="org.hakunamatata.myhome.model.Reaction" />
 	</session-factory>
 </hibernate-configuration>

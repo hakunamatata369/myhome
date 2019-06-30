@@ -3,77 +3,82 @@ package org.hakunamatata.myhome.service;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 
-//import javax.ws.rs.NotFoundException;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.hakunamatata.myhome.database.Database;
-//import org.hakunamatata.myhome.exception.DataNotFoundException;
+import org.hakunamatata.myhome.dao.CommentDao;
+import org.hakunamatata.myhome.database.HibernateUtil;
 import org.hakunamatata.myhome.model.Comment;
-import org.hakunamatata.myhome.model.ErrorMessage;
 
 public class CommentService {
 
-    //test
-	private Map<Long, Comment> comments = Database.getComments();
+	private static CommentDao commentDao;
 
-    public List<Comment> getAllComments() {
-	return new ArrayList<Comment>(comments.values());
-    }
-
-    public List<Comment> getAllCommentsByYear(int year) {
-	List<Comment> CommentsByYear = new ArrayList<>();
-	Calendar cal = Calendar.getInstance();
-	for (Comment c : comments.values()) {
-	    cal.setTime(c.getCreatedDate());
-	    if (cal.get(Calendar.YEAR) == year) {
-		CommentsByYear.add(c);
-	    }
+	public CommentService() {
+		commentDao = new CommentDao();
 	}
-	return CommentsByYear;
-    }
 
-    public List<Comment> getAllCommentsPaginated(int start, int size) {
-	ArrayList<Comment> list = new ArrayList<>(comments.values());
-	if (start + size > comments.size()) {
-	    new ArrayList<Comment>();
+	public Comment addComment(Comment comment) {
+		HibernateUtil.openCurrentSessionwithTransaction();
+		comment = commentDao.save(comment);
+		HibernateUtil.closeCurrentSessionwithTransaction();
+		return comment;
 	}
-	return list.subList(start, start + size);
-    }
 
-    public Comment getComment(long commentId) {
-	ErrorMessage errorMessage = new ErrorMessage("Not Found",404);
-	
-	Response response = Response.status(Status.NOT_FOUND)
-		.entity(errorMessage)
-		.build();
+	public Comment updateComment(Comment comment) {
+		HibernateUtil.openCurrentSessionwithTransaction();
+		commentDao.update(comment);
+		HibernateUtil.closeCurrentSessionwithTransaction();
+		return comment;
+	}
 
-	Comment comment = comments.get(commentId);
-	if (comment == null)
-	    //throw new  DataNotFoundException("Comment with id : " + commentId + " not available");
-	    //throw new NotFoundException(response);
-	    throw new WebApplicationException(response);
-	return comment;
-    }
+	public Comment getComment(long parentId, long dataId) {
+		HibernateUtil.openCurrentSession();
+		Comment comment = commentDao.getById(parentId, dataId);
+		HibernateUtil.closeCurrentSession();
+		return comment;
+	}
 
-    public Comment addComment(Comment comment) {
-	comment.setCommentId(comments.size() + 1);
-	comments.put(comment.getCommentId(), comment);
-	return comment;
-    }
+	public void deleteComment(long parentId, long dataId) {
+		HibernateUtil.openCurrentSessionwithTransaction();
+		Comment comment = commentDao.getById(parentId, dataId);
+		commentDao.delete(comment);
+		HibernateUtil.closeCurrentSessionwithTransaction();
+	}
 
-    public Comment updateComment(Comment comment) {
-	if (comment.getCommentId() <= 0)
-	    return null;
-	comments.put(comment.getCommentId(), comment);
-	return comment;
-    }
+	public List<Comment> getAllComments(long parentId) {
+		HibernateUtil.openCurrentSession();
+		List<Comment> comments = commentDao.getAll(parentId);
+		HibernateUtil.closeCurrentSession();
+		return comments;
+	}
 
-    public Comment deleteComment(long commentId) {
-	return comments.remove(commentId);
-    }
+	public void deleteAllComments(long parentId) {
+		HibernateUtil.openCurrentSessionwithTransaction();
+		commentDao.deleteAll(parentId);
+		HibernateUtil.closeCurrentSessionwithTransaction();
+	}
+
+	public List<Comment> getAllCommentsByYear(long parentId, int year) {
+		List<Comment> CommentsByYear = new ArrayList<>();
+		Calendar cal = Calendar.getInstance();
+		for (Comment c : getAllComments(parentId)) {
+			cal.setTime(c.getCreatedDate());
+			if (cal.get(Calendar.YEAR) == year) {
+				CommentsByYear.add(c);
+			}
+		}
+		return CommentsByYear;
+	}
+
+	public List<Comment> getAllCommentsPaginated(long parentId, int start, int size) {
+		ArrayList<Comment> list = new ArrayList<>(getAllComments(parentId));
+		if (start + size > getAllComments(parentId).size()) {
+			new ArrayList<Comment>();
+		}
+		return list.subList(start, start + size);
+	}
+
+	public CommentDao commentDao() {
+		return commentDao;
+	}
 
 }

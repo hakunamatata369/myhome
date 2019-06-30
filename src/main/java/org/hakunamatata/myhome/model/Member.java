@@ -85,7 +85,7 @@ public class Member {
 	private Collection<Vehicle> ownedVehicles = new ArrayList<>();
 
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "member_relations", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "child_id "))
+	@JoinTable(name = "member_relations", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "child_id"))
 	private Collection<Member> childs = new ArrayList<>();
 
 	@Transient

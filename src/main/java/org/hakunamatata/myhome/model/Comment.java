@@ -1,109 +1,107 @@
 package org.hakunamatata.myhome.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
-public class Comment {
+@Entity
+@Table(name = "comment")
+@PrimaryKeyJoinColumn(name = "comment_id", referencedColumnName = "data_id")
+public class Comment extends Node {
 
-    private long commentId;
-    private String comment;
-    private long commentedOn;
-    private String createdBy;
-    private Date createdDate;
-    private String modifiedBy;
-    private Date modifiedDate;
-    private List<Link> links = new ArrayList<>();
-    
-    
-    public Comment() {
+	@Column(name = "comment")
+	@Lob
+	private String comment;
 
-    }
+	@OneToMany
+	@JoinTable(name = "comment_members_tagged", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "member_id"))
+	private Collection<Member> membersTagged = new ArrayList<>();
 
-    public Comment(long commentId, String comment, long commentedOn, String createdBy, Date createdDate,
-	    String modifiedBy, Date modifiedDate) {
-	super();
-	this.commentId = commentId;
-	this.comment = comment;
-	this.commentedOn = commentedOn;
-	this.createdBy = createdBy;
-	this.createdDate = createdDate;
-	this.modifiedBy = modifiedBy;
-	this.modifiedDate = modifiedDate;
-    }
+	@OneToMany
+	@JoinTable(name = "comment_members_mentioned", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "member_id"))
+	private Collection<Member> membersMentioned = new ArrayList<>();
 
-    public long getCommentId() {
-	return commentId;
-    }
+	@OneToMany
+	@JoinTable(name = "comment_attachments", joinColumns = @JoinColumn(name = "comment_id"), inverseJoinColumns = @JoinColumn(name = "attachment_id"))
+	private Collection<Node> nodesAttached = new ArrayList<>();
 
-    public void setCommentId(long commentId) {
-	this.commentId = commentId;
-    }
+	@Transient
+	private List<Link> links = new ArrayList<>();
 
-    public String getComment() {
-	return comment;
-    }
+	public Comment() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    public void setComment(String comment) {
-	this.comment = comment;
-    }
+	public Comment(long parentId, String name, int subType, String createdBy, Date createdDate, String modifiedby,
+			Date modifieddate, int childCount, String extendedData) {
+		super(parentId, name, subType, createdBy, createdDate, modifiedby, modifieddate, childCount, extendedData);
+		// TODO Auto-generated constructor stub
+	}
 
-    public long getCommentedOn() {
-	return commentedOn;
-    }
+	@XmlTransient
+	public Collection<Member> getMembersTagged() {
+		return membersTagged;
+	}
 
-    public void setCommentedOn(long commentedOn) {
-	this.commentedOn = commentedOn;
-    }
+	public void setMembersTagged(Collection<Member> membersTagged) {
+		this.membersTagged = membersTagged;
+	}
 
-    public String getCreatedBy() {
-	return createdBy;
-    }
+	@XmlTransient
+	public Collection<Member> getMembersMentioned() {
+		return membersMentioned;
+	}
 
-    public void setCreatedBy(String createdBy) {
-	this.createdBy = createdBy;
-    }
+	public void setMembersMentioned(Collection<Member> membersMentioned) {
+		this.membersMentioned = membersMentioned;
+	}
 
-    public Date getCreatedDate() {
-	return createdDate;
-    }
+	@XmlTransient
+	public Collection<Node> getNodesAttached() {
+		return nodesAttached;
+	}
 
-    public void setCreatedDate(Date createdDate) {
-	this.createdDate = createdDate;
-    }
+	public void setNodesAttached(Collection<Node> nodesAttached) {
+		this.nodesAttached = nodesAttached;
+	}
 
-    public String getModifiedBy() {
-	return modifiedBy;
-    }
+	public List<Link> getLinks() {
+		return links;
+	}
 
-    public void setModifiedBy(String modifiedBy) {
-	this.modifiedBy = modifiedBy;
-    }
+	public void setLinks(List<Link> links) {
+		this.links = links;
+	}
 
-    public Date getModifiedDate() {
-	return modifiedDate;
-    }
+	public void addLink(String url, String rel) {
+		Link link = new Link();
+		link.setLink(url);
+		link.setRel(rel);
+		links.add(link);
+	}
 
-    public void setModifiedDate(Date modifiedDate) {
-	this.modifiedDate = modifiedDate;
-    }
+	public String getComment() {
+		return comment;
+	}
 
-    public List<Link> getLinks() {
-	return links;
-    }
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 
-    public void setLinks(List<Link> links) {
-	this.links = links;
-    }
-
-    public void addLink(String url, String rel) {
-	Link link = new Link();
-	link.setLink(url);
-	link.setRel(rel);
-	links.add(link);
-    }
-    
 }
